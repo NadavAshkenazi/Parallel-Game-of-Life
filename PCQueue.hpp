@@ -3,7 +3,6 @@
 #include "Headers.hpp"
 #include "Semaphore.hpp"
 
-using namespace std;
 
 // Single Producer - Multiple Consumer queue
 template <typename T>class PCQueue
@@ -12,6 +11,7 @@ template <typename T>class PCQueue
 public:
     PCQueue(){
         s = new Semaphore(0);
+        queue = new std::queue<T>();
     };
     // Blocks while queue is empty. When queue holds items, allows for a single
     // thread to enter and remove an item from the front of the queue and return it.
@@ -19,7 +19,8 @@ public:
     T pop(){
         s->down();
         pthread_mutex_lock(&global_lock);
-        T item = queue.pop();
+        T item = queue->front();
+        queue->pop();
         pthread_mutex_unlock(&global_lock);
         return item;
     };
@@ -29,7 +30,7 @@ public:
     // Assumes single producer
     void push(const T& item){
         pthread_mutex_lock(&global_lock);
-        queue.push(item);
+        queue->push(item);
         s->up();
         pthread_mutex_unlock(&global_lock);
     };
@@ -40,7 +41,7 @@ private:
 //    pthread_cond_t read_allowed;
 //    pthread_cond_t write_allowed;
     pthread_mutex_t global_lock;
-    queue<T> queue;
+    std::queue<T>* queue;
     Semaphore* s;
 };
 // Recommendation: Use the implementation of the std::queue for this exercise
