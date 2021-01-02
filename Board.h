@@ -7,21 +7,29 @@
 
 using namespace std;
 
-class Board{
-    unsigned int weight;
-    unsigned int height;
-    vector<vector<int>> matrix;
+class neighborhood{
+public:
+    int left;
+    int right;
+    int down;
+    int up;
+};
 
+class Board{
+    unsigned int width;
+    unsigned int height;
+    vector<vector<int>*>* matrix;
+    neighborhood _getNeighborhood(int i, int j);
 public:
     Board(const string& filename);
     ~Board();
     bool isAlive(int i, int j);
     int getSpecies(int i, int j);
-    int setSpecies(int i, int j, int species);
+    void setSpecies(int i, int j, int species);
     int getHeight();
-    int getWeight();
-    int calcNewSpecies(int i, int j);
-    int dominantSpeciesInNeighborhood(int i, int j);
-    int getAliveCellsInNeighborhood(int i, int j);
+    int getWidth();
+    int getAliveCellsInNeighborhood(int i, int j); //excludes [i,j]
+    int calcNewSpecies(int i, int j); //includes [i,j]
+    int dominantSpeciesInNeighborhood(int i, int j); //returns 0 if all dead
     friend ostream& operator<<(ostream& os, const Board& board);
 };
