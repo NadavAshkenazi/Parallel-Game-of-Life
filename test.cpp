@@ -36,14 +36,14 @@ void* sleep_test0(void* ptr){
 
 
 void* pop(void* harta) {
-    cout << queue1->pop() << endl ;
+    cout << "poped: " << queue1->pop() << endl ;
     return NULL;
 }
 
 void* push(void* val){
-    int* val_int = (int*)val;
-    queue1->push(*val_int);
-    cout << "pushed: "<< *val_int << endl ;
+    int val_int = *((int*)val);
+    queue1->push(val_int);
+    cout << "pushed: "<< val_int << endl ;
     return NULL;
 }
 
@@ -77,10 +77,21 @@ int main() {
     pthread_t t3;
     pthread_t t4;
     pthread_t t5;
-    int num = 5;
+    pthread_t t6;
+
+    int n = 5;
+    int* num = &n;
+    int n1 = 6;
+    int* num1 = &n1;
     pthread_create(&t3, NULL, pop, (void*)num);
     pthread_create(&t4, NULL, push, (void*)num);
     pthread_create(&t5, NULL, pop,(void*)num);
+    pthread_create(&t6, NULL, push, (void*)num1);
+
+    pthread_join(t3, NULL);
+    pthread_join(t4, NULL);
+    pthread_join(t5, NULL);
+    pthread_join(t6, NULL);
 
     return 0;
 }
