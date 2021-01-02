@@ -5,21 +5,22 @@
 class Thread
 {
 public:
-	Thread(uint thread_id) 
-	{
-		// Only places thread_id 
-	} 
+	Thread(uint thread_id) : m_thread_id(thread_id) {};
 	virtual ~Thread() {} // Does nothing 
 
 	/** Returns true if the thread was successfully started, false if there was an error starting the thread */
 	// Creates the internal thread via pthread_create 
 	bool start()
 	{
+        if (pthread_create(&m_thread, NULL, entry_func, (void*)this) == 0)
+            return true;
+        return false;
 	}
 
 	/** Will not return until the internal thread has exited. */
 	void join()
 	{
+        pthread_join(m_thread, NULL);
 	}
 
 	/** Returns the thread_id **/

@@ -10,7 +10,7 @@ void Game::run() {
 	print_board("Initial Board");
 	for (uint i = 0; i < m_gen_num; ++i) {
 		auto gen_start = std::chrono::system_clock::now();
-		_step(i); // Iterates a single generation 
+		_step(i); // Iterates a single generation
 		auto gen_end = std::chrono::system_clock::now();
 		m_gen_hist.push_back((double)std::chrono::duration_cast<std::chrono::microseconds>(gen_end - gen_start).count());
 		print_board(nullptr);
@@ -28,7 +28,7 @@ void Game::_init_game() {
 
 void Game::_step(uint curr_gen) {
 	// Push jobs to queue
-	// Wait for the workers to finish calculating 
+	// Wait for the workers to finish calculating - barrier??
 	// Swap pointers between current and next field 
 	// NOTE: Threads must not be started here - doing so will lead to a heavy penalty in your grade 
 }
@@ -37,12 +37,13 @@ void Game::_destroy_game(){
 	// Destroys board and frees all threads and resources 
 	// Not implemented in the Game's destructor for testing purposes. 
 	// All threads must be joined here
+	// TODO: maybe add jobs to list that kill the thread
 	for (uint i = 0; i < m_thread_num; ++i) {
         m_threadpool[i]->join();
     }
 }
 
-/*--------------------------------------------------------------------------------
+/*------------------------------------------------t--------------------------------
 								
 --------------------------------------------------------------------------------*/
 inline void Game::print_board(const char* header) {
