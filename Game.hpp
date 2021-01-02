@@ -4,6 +4,8 @@
 #include "Headers.hpp"
 #include "Thread.hpp"
 #include "PCQueue.hpp"
+#include "Board.h"
+#include "Job.h"
 
 /*--------------------------------------------------------------------------------
 								  Species colors
@@ -30,10 +32,6 @@ struct game_params {
 	bool print_on; 
 };
 
-class ThreadGame : public Thread {
-    void thread_workload();
-};
-
 /*--------------------------------------------------------------------------------
 									Class Declaration
 --------------------------------------------------------------------------------*/
@@ -47,6 +45,14 @@ public:
 	const vector<double> tile_hist() const; // Returns the tile timing histogram
 	uint thread_num() const; //Returns the effective number of running threads = min(thread_num, field_height)
 
+    class ThreadGame : public Thread {
+    public:
+        ThreadGame(uint, PCQueue<Job*>*, Semaphore*);
+        void thread_workload();
+
+        PCQueue<Job*>* jobQueue;
+        Semaphore* waitForThreads;
+    };
 
 protected: // All members here are protected, instead of private for testing purposes
 

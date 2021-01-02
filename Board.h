@@ -1,7 +1,6 @@
 #ifndef OS_HW3_BOARD_H
 #define OS_HW3_BOARD_H
 
-#endif //OS_HW3_BOARD_H
 #include "vector"
 #include "string"
 
@@ -33,3 +32,5 @@ public:
     int dominantSpeciesInNeighborhood(int i, int j); //returns 0 if all dead
     friend ostream& operator<<(ostream& os, const Board& board);
 };
+
+#endif //OS_HW3_BOARD_H

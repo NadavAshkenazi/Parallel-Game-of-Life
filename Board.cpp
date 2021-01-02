@@ -56,6 +56,8 @@ int Board::getWidth(){
     return this->width;
 }
 
+// TODO: maybe change Neighborhood to star (not square)
+
 neighborhood Board::_getNeighborhood(int i, int j){
     neighborhood n = neighborhood();
     n.left = (j-8) >= 0 ? (j-8) : 0;
@@ -120,3 +122,21 @@ int Board::dominantSpeciesInNeighborhood(int i, int j){
     }
     return dominantSpecies;
 }
+
+// TODO: implement << operator
+/*
+std::ostream& operator<<(ostream& os, const Board& board) {
+		cout << u8"╔" << string(u8"═") * board.width << u8"╗" << endl;
+		for (uint i = 0; i < board.height ; ++i) {
+			cout << u8"║";
+			for (uint j = 0; j < board.width; ++j) {
+                if (board.matrix[i][j] > 0)
+                    cout << colors[board.matrix[i][j] % 7] << u8"█" << RESET;
+                else
+                    cout << u8"░";
+			}
+			cout << u8"║" << endl;
+		}
+		cout << u8"╚" << string(u8"═") * board.width << u8"╝" << endl;
+}
+*/

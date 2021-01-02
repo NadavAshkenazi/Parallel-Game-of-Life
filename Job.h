@@ -2,6 +2,7 @@
 #define OS_HW3_JOB_H
 
 #include "Board.h"
+#define DEAD 0
 
 class Job {
     public:
@@ -10,26 +11,27 @@ class Job {
         virtual void execute() = 0;
 
         Board* _currentBoard;
-        Board* _next_Board;
+        Board* _nextBoard;
         int _rowStart;
         int _rowEnd;
 };
 
 class AliveJob : public Job {
+public:
     AliveJob (Board*, Board*, int, int);
     void execute();
 };
 
 class SpeciesJob : public Job {
+public:
     SpeciesJob (Board*, Board*, int, int);
     void execute();
 };
 
 class KillThreadJob : public Job {
-    KillThreadJob (Board*, Board*, int, int);
+public:
+    KillThreadJob ();
     void execute(); // exit(0)
 };
-
-
 
 #endif //OS_HW3_JOB_H

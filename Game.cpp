@@ -1,5 +1,6 @@
 #include "Game.hpp"
 
+
 static const char *colors[7] = {BLACK, RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN};
 /*--------------------------------------------------------------------------------
 								
@@ -20,9 +21,13 @@ void Game::run() {
 }
 
 void Game::_init_game() {
-
 	// Create game fields - Consider using utils:read_file, utils::split
+	// calculate tiles
 	// Create & Start threads
+	for (int i=0 ; i< m_thread_num; i++){
+        m_threadpool[i] = new ThreadGame(i, &jobQueue, &waitForThreads);
+        m_threadpool[i]->start();
+	}
 	// Testing of your implementation will presume all threads are started here
 }
 
@@ -43,7 +48,7 @@ void Game::_destroy_game(){
     }
 }
 
-/*------------------------------------------------t--------------------------------
+/*--------------------------------------------------------------------------------
 								
 --------------------------------------------------------------------------------*/
 inline void Game::print_board(const char* header) {
@@ -83,7 +88,32 @@ inline void Game::print_board(const char* header) {
 			cout << u8"║" << endl;
 		}
 		cout << u8"╚" << string(u8"═") * field_width << u8"╝" << endl;
-*/ 
+*/
 
+Game::ThreadGame::ThreadGame(uint thread_id, PCQueue<Job*>* jobQueue, Semaphore* waitForThreads) : Thread(thread_id), jobQueue(jobQueue)
+                                                                                                   ,waitForThreads(waitForThreads) {}
+void Game::ThreadGame::thread_workload() {
+//    pop job from queue
+//    start timer
+//    execute job
+//    stop timer
+//    append duration to shared tile history vector
+}
 
-
+Game::Game(game_params params){
+    m_gen_num = params.n_gen;
+    interactive_on = params.interactive_on;
+    print_on = params.print_on;
+    currentBoard = new Board(params.filename);
+    nextBoard = new Board(params.filename);
+    m_thread_num = params.n_thread > currentBoard->getHeight() ? currentBoard->getHeight() : params.n_thread;
+}
+Game::~Game() {
+    delete currentBoard;
+    delete nextBoard;
+}
+const vector<double> Game::gen_hist() const {}
+const vector<double> Game::tile_hist() const {}
+uint Game::thread_num() const {
+    return m_thread_num;
+}

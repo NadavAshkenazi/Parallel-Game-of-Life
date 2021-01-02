@@ -11,7 +11,7 @@ template <typename T>class PCQueue
 public:
     PCQueue(){
         s = new Semaphore(0);
-        queue = new std::queue<T>();
+        q = new std::queue<T>();
     };
     // Blocks while queue is empty. When queue holds items, allows for a single
     // thread to enter and remove an item from the front of the queue and return it.
@@ -19,8 +19,8 @@ public:
     T pop(){
         s->down();
         pthread_mutex_lock(&global_lock);
-        T item = queue->front();
-        queue->pop();
+        T item = q->front();
+        q->pop();
         pthread_mutex_unlock(&global_lock);
         return item;
     };
@@ -30,7 +30,7 @@ public:
     // Assumes single producer
     void push(const T& item){
         pthread_mutex_lock(&global_lock);
-        queue->push(item);
+        q->push(item);
         s->up();
         pthread_mutex_unlock(&global_lock);
     };
@@ -41,7 +41,7 @@ private:
 //    pthread_cond_t read_allowed;
 //    pthread_cond_t write_allowed;
     pthread_mutex_t global_lock;
-    std::queue<T>* queue;
+    std::queue<T>* q;
     Semaphore* s;
 };
 // Recommendation: Use the implementation of the std::queue for this exercise
