@@ -23,6 +23,10 @@ public:
         pthread_join(m_thread, NULL);
 	}
 
+	void exit(){
+        pthread_exit(NULL);
+	}
+
 	/** Returns the thread_id **/
 	uint thread_id()
 	{

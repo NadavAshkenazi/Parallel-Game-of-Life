@@ -19,6 +19,7 @@
 #define MAGENTA "\033[35m"      /* Magenta - 5*/
 #define CYAN    "\033[36m"      /* Cyan - 6*/
 
+enum Phase { phase1, phase2 };
 
 /*--------------------------------------------------------------------------------
 								  Auxiliary Structures
@@ -41,7 +42,8 @@ public:
 	Game(game_params);
 	~Game();
 	void run(); // Runs the game
-	const vector<double> gen_hist() const; // Returns the generation timing histogram  
+	void calcTiles();
+	const vector<double> gen_hist() const; // Returns the generation timing histogram
 	const vector<double> tile_hist() const; // Returns the tile timing histogram
 	uint thread_num() const; //Returns the effective number of running threads = min(thread_num, field_height)
 
@@ -58,7 +60,7 @@ protected: // All members here are protected, instead of private for testing pur
 
 	// See Game.cpp for details on these three functions
 	void _init_game(); 
-	void _step(uint curr_gen); 
+	void _step(Phase phase);
 	void _destroy_game(); 
 	inline void print_board(const char* header);
 
@@ -76,6 +78,7 @@ protected: // All members here are protected, instead of private for testing pur
     Board* nextBoard;
     PCQueue<Job*> jobQueue;
     Semaphore waitForThreads;
+    vector<int> tilesStratRow;
 
 };
 #endif

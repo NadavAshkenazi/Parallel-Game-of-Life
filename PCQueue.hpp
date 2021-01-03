@@ -35,6 +35,14 @@ public:
         pthread_mutex_unlock(&global_lock);
     };
 
+    /*
+    void print(){
+        for (auto it = q->begin(); it != q->end() ; ++it){
+            cout <<
+        }
+    }
+    */
+
 
 private:
     // Add your class members here

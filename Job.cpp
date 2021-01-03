@@ -1,10 +1,13 @@
 #include "Job.h"
+#include <unistd.h>
+#include <sys/syscall.h>
 
 Job::Job(Board* currentBoard, Board* nextBoard, int rowStart, int rowEnd) : _currentBoard(currentBoard), _nextBoard(nextBoard),
                                                                             _rowStart(rowStart), _rowEnd(rowEnd) {}
 
 AliveJob::AliveJob(Board* currentBoard, Board* nextBoard, int rowStart, int rowEnd) : Job(currentBoard, nextBoard, rowStart, rowEnd) {}
-void AliveJob::execute() {
+void AliveJob::execute(Thread* thread) {
+    /*
     int aliveNeigborsNum;
     for (int i = _rowStart; i <= _rowEnd; i++) { // go over this job lines
         for (int j = 0; j < _currentBoard->getWidth(); j++) { // go over one line
@@ -23,23 +26,35 @@ void AliveJob::execute() {
                 }
             }
         }
-    }
+    } */
+    //sleep(5);
+    std::cout << "working on Job Alive, my pid:  " << syscall(SYS_gettid) << endl;
     return;
 }
 
 SpeciesJob::SpeciesJob(Board* currentBoard, Board* nextBoard, int rowStart, int rowEnd) : Job(currentBoard, nextBoard, rowStart, rowEnd) {}
-void SpeciesJob::execute() {
+void SpeciesJob::execute(Thread* thread) {
+    /*
     for (int i = _rowStart; i <= _rowEnd; i++) { // go over this job lines
         for (int j = 0; j < _currentBoard->getWidth(); j++) { // go over one line
             if (_currentBoard->isAlive(i, j)){
                 _nextBoard->setSpecies(i, j, _currentBoard->calcNewSpecies(i,j));
             }
         }
-    }
+    } */
+
+    std::cout << "working on Job Species, my pid:  " << syscall(SYS_gettid) << endl;
+    //sleep(5);
     return;
 }
 
 KillThreadJob::KillThreadJob(): Job(NULL, NULL, NULL, NULL) {}
-void KillThreadJob::execute() {
-    exit(0);
+void KillThreadJob::execute(Thread* thread) {
+    thread->exit();
 }
+
+/*
+ostream& operator<<(ostream& os, const Job& job){
+    os << job._rowStart << job._rowEnd << endl;
+    return os;
+} */
