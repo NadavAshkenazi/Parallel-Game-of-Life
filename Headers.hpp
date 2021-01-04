@@ -21,7 +21,7 @@
 #include <algorithm>
 #include <numeric>  
 #include <unistd.h>
-#include <sys/types.h>
+#include <sys/syscall.h>
 
 // Threads & Synchronization 
 #include <pthread.h>

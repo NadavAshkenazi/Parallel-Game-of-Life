@@ -49,11 +49,13 @@ public:
 
     class ThreadGame : public Thread {
     public:
-        ThreadGame(uint, PCQueue<Job*>*, Semaphore*);
+        ThreadGame(uint, PCQueue<Job*>*, Semaphore*, pthread_mutex_t*, vector<double>*);
         void thread_workload();
 
         PCQueue<Job*>* jobQueue;
         Semaphore* waitForThreads;
+        pthread_mutex_t* m_tile_hist_lock;
+        vector<double>* m_tile_hist;
     };
 
 protected: // All members here are protected, instead of private for testing purposes
@@ -79,6 +81,7 @@ protected: // All members here are protected, instead of private for testing pur
     PCQueue<Job*> jobQueue;
     Semaphore waitForThreads;
     vector<int> tilesStratRow;
+    pthread_mutex_t m_tile_hist_lock;
 
 };
 #endif
