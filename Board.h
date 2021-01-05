@@ -6,7 +6,7 @@
 
 using namespace std;
 
-class neighborhood{
+class neighborhoodBorders{
 public:
     int left;
     int right;
@@ -18,7 +18,8 @@ class Board{
     unsigned int width;
     unsigned int height;
     vector<vector<int>*>* matrix;
-    neighborhood _getNeighborhood(int i, int j);
+    neighborhoodBorders _getNeighborhoodBorders(int i, int j);
+    bool isNeighbor(int cellI, int cellJ, int iForCheck, int jForCheck);
 public:
     Board(const string& filename);
     ~Board();
@@ -30,7 +31,6 @@ public:
     int getAliveCellsInNeighborhood(int i, int j); //excludes [i,j]
     int calcNewSpecies(int i, int j); //includes [i,j]
     int dominantSpeciesInNeighborhood(int i, int j); //returns 0 if all dead
-    friend ostream& operator<<(ostream& os, const Board& board);
 };
 
 #endif //OS_HW3_BOARD_H

@@ -4,6 +4,8 @@
 
 using namespace utils;
 
+# define NEIGHBORHOOD_DIST 8
+
 Board::Board(const string& filename){
     vector<string> temp = read_lines(filename);
     this->height = temp.size();
@@ -57,21 +59,40 @@ int Board::getWidth(){
 }
 
 // TODO: maybe change Neighborhood to star (not square)
+/**
+ * checks if a given cell is a neighbor of another
+ * will work only when checking within neighborhoods borders
+ * @param cellI - i of the cell defining the neighborhood
+ * @param cellJ - j of the cell defining the neighborhood
+ * @param iForCheck
+ * @param jForCheck
+ * @return True if neighbors, false otherwise
+ */
+bool Board::isNeighbor(int cellI, int cellJ, int iForCheck, int jForCheck){
+    if (cellI == iForCheck || cellJ == jForCheck)
+        return true;
+    if (abs(cellI - iForCheck) == abs(cellJ - jForCheck))
+        return true;
+    return false;
+}
 
-neighborhood Board::_getNeighborhood(int i, int j){
-    neighborhood n = neighborhood();
-    n.left = (j-8) >= 0 ? (j-8) : 0;
-    n.right = (j+8) < width ? (j+8) : width-1;
-    n.up = (i-8) >= 0 ? (i-8) : 0;
-    n.down = (i+8) < height ? (i+8) : height-1;
+
+neighborhoodBorders Board::_getNeighborhoodBorders(int i, int j){
+    neighborhoodBorders n = neighborhoodBorders();
+    n.left = (j - NEIGHBORHOOD_DIST) >= 0 ? (j-NEIGHBORHOOD_DIST) : 0;
+    n.right = (j + NEIGHBORHOOD_DIST) < width ? (j+NEIGHBORHOOD_DIST) : width-1;
+    n.up = (i-NEIGHBORHOOD_DIST) >= 0 ? (i-NEIGHBORHOOD_DIST) : 0;
+    n.down = (i+NEIGHBORHOOD_DIST) < height ? (i+NEIGHBORHOOD_DIST) : height-1;
     return n;
 }
+
 int Board::getAliveCellsInNeighborhood(int i, int j){
-    neighborhood n = _getNeighborhood(i,j);
+    neighborhoodBorders n = _getNeighborhoodBorders(i, j);
     int aliveInNeighborhood = 0;
     for (int k = n.up; k <= n.down; k++){
         for (int m = n.left; m <= n.right; m++){
-            aliveInNeighborhood += isAlive(k,m);
+            if (isNeighbor(i,j,k,m))
+                aliveInNeighborhood += isAlive(k,m);
         }
     }
     if (isAlive(i,j)){
@@ -83,10 +104,11 @@ int Board::getAliveCellsInNeighborhood(int i, int j){
 int Board::calcNewSpecies(int i, int j){
     int aliveInNeighborhood = isAlive(i,j) ? getAliveCellsInNeighborhood(i,j) + 1 : getAliveCellsInNeighborhood(i,j);
     int speciesSum = 0;
-    neighborhood n = _getNeighborhood(i,j);
+    neighborhoodBorders n = _getNeighborhoodBorders(i, j);
     for (int k = n.down; k <= n.up; k++){
         for (int m = n.left; m <= n.right; m++){
-            speciesSum += getSpecies(k,m);
+            if (isNeighbor(i,j,k,m))
+                speciesSum += getSpecies(k,m);
         }
     }
     double newSpecies = speciesSum/aliveInNeighborhood;
@@ -94,16 +116,17 @@ int Board::calcNewSpecies(int i, int j){
 }
 
 int Board::dominantSpeciesInNeighborhood(int i, int j){
-    neighborhood n = _getNeighborhood(i,j);
+    neighborhoodBorders n = _getNeighborhoodBorders(i, j);
     std::map<int,int> species = std::map<int,int>();
     for (int k = n.down; k <= n.up; k++){
         for (int m = n.left; m <= n.right; m++){
-           if (species.find(getSpecies(i,j)) != species.end()){
-               species[getSpecies(i,j)]++;
-           }
-           else{
-               species[getSpecies(i,j)] = 1;
-           }
+            if (isNeighbor(i,j,k,m)) {
+                if (species.find(getSpecies(i, j)) != species.end()) {
+                    species[getSpecies(i, j)]++;
+                } else {
+                    species[getSpecies(i, j)] = 1;
+                }
+            }
         }
     }
     int dominantSpecies = 0;
@@ -122,21 +145,3 @@ int Board::dominantSpeciesInNeighborhood(int i, int j){
     }
     return dominantSpecies;
 }
-
-// TODO: implement << operator
-/*
-std::ostream& operator<<(ostream& os, const Board& board) {
-		cout << u8"╔" << string(u8"═") * board.width << u8"╗" << endl;
-		for (uint i = 0; i < board.height ; ++i) {
-			cout << u8"║";
-			for (uint j = 0; j < board.width; ++j) {
-                if (board.matrix[i][j] > 0)
-                    cout << colors[board.matrix[i][j] % 7] << u8"█" << RESET;
-                else
-                    cout << u8"░";
-			}
-			cout << u8"║" << endl;
-		}
-		cout << u8"╚" << string(u8"═") * board.width << u8"╝" << endl;
-}
-*/

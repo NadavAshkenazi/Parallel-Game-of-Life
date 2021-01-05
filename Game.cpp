@@ -1,4 +1,6 @@
 #include "Game.hpp"
+#include "utils.hpp"
+
 
 
 static const char *colors[7] = {BLACK, RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN};
@@ -8,7 +10,7 @@ static const char *colors[7] = {BLACK, RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN};
 void Game::run() {
 
 	_init_game(); // Starts the threads and all other variables you need
-	//print_board("Initial Board");
+	print_board("Initial Board");
 	for (uint i = 0; i < m_gen_num; ++i) {
 	    //cout << "strat iteration: " << i << endl; //TODO: delete
 		auto gen_start = std::chrono::system_clock::now();
@@ -17,9 +19,9 @@ void Game::run() {
         _step(phase2);
 		auto gen_end = std::chrono::system_clock::now();
 		m_gen_hist.push_back((double)std::chrono::duration_cast<std::chrono::microseconds>(gen_end - gen_start).count());
-		//print_board(nullptr);
+		print_board(nullptr);
 	} // generation loop
-	//print_board("Final Board");
+	print_board("Final Board");
 	// TODO: delete. debug pring for gen_hist_times
 	/*cout << "print m_tile_hist" << endl;
 	for (auto i = m_tile_hist.begin() ; i != m_tile_hist.end() ; i++){
@@ -104,7 +106,19 @@ inline void Game::print_board(const char* header) {
 		if (header != nullptr)
 			cout << "<------------" << header << "------------>" << endl;
 		
-		// TODO: Print the board 
+		// printing the board
+        cout << u8"╔" << string(u8"═") * currentBoard->getWidth() << u8"╗" << endl;
+        for (uint i = 0; i < currentBoard->getHeight(); ++i) {
+            cout << u8"║";
+            for (uint j = 0; j < currentBoard->getWidth(); ++j) {
+                if (currentBoard->getSpecies(i,j) > 0)
+                    cout << colors[currentBoard->getSpecies(i,j) % 7] << u8"█" << RESET;
+                else
+                    cout << u8"░";
+            }
+            cout << u8"║" << endl;
+        }
+        cout << u8"╚" << string(u8"═") * currentBoard->getWidth() << u8"╝" << endl;
 
 		// Display for GEN_SLEEP_USEC micro-seconds on screen 
 		if(interactive_on)
