@@ -13,12 +13,14 @@ public:
         s = new Semaphore();
         q = new std::queue<T>();
         pthread_mutex_init(&global_lock, NULL);
+        writeReq = false;
     };
     // Blocks while queue is empty. When queue holds items, allows for a single
     // thread to enter and remove an item from the front of the queue and return it.
     // Assumes multiple consumers.
     T pop(){
         //std::cout << "Try to pop, pid:  " << syscall(SYS_gettid) << endl; // TODO: delete
+        while(writeReq);
         s->down();
         //std::cout << "got after cond_wait, pid:  " << syscall(SYS_gettid) << endl;  // TODO: delete
         pthread_mutex_lock(&global_lock);
@@ -34,10 +36,12 @@ public:
     // Assumes single producer
     void push(const T& item){
         //std::cout << "try to push, pid:  " << syscall(SYS_gettid) << endl;  // TODO: delete
+        writeReq = true;
         pthread_mutex_lock(&global_lock);
         //std::cout << "pushing item, pid:  " << syscall(SYS_gettid) << endl;  // TODO: delete
         q->push(item);
         s->up();
+        writeReq = false;
         pthread_mutex_unlock(&global_lock);
     };
 
@@ -57,6 +61,7 @@ private:
     pthread_mutex_t global_lock;
     std::queue<T>* q;
     Semaphore* s;
+    bool writeReq;
 };
 // Recommendation: Use the implementation of the std::queue for this exercise
 
