@@ -136,7 +136,7 @@ int Board::dominantSpeciesInNeighborhood(int i, int j){
 
     std::map<int,int>::iterator it;
     for(it = species.begin(); it != species.end(); ++it){
-        if (maxElements < it->second){
+        if (maxElements * dominantSpecies < it->first*it->second){
             dominantSpecies = it->first;
             maxElements = it->second;
         }

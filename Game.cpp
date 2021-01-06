@@ -18,7 +18,7 @@ void Game::run() {
             cout << "dominent species for (7,5): " << currentBoard->dominantSpeciesInNeighborhood(7,5)  << endl; // TODO: delete
         _step(phase1); // Iterates a single generation
         //cout << "finished phase 1" << endl; // TODO: delete
-        print_board("phase 0"); // TODO: delete
+//        print_board("phase 0"); // TODO: delete
         _step(phase2);
 		auto gen_end = std::chrono::system_clock::now();
 		m_gen_hist.push_back((double)std::chrono::duration_cast<std::chrono::microseconds>(gen_end - gen_start).count());
