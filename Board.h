@@ -31,6 +31,7 @@ public:
     int getAliveCellsInNeighborhood(int i, int j); //excludes [i,j]
     int calcNewSpecies(int i, int j); //includes [i,j]
     int dominantSpeciesInNeighborhood(int i, int j); //returns 0 if all dead
+    void clear();
 };
 
 #endif //OS_HW3_BOARD_H

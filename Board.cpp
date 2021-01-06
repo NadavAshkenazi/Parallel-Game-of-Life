@@ -4,7 +4,7 @@
 
 using namespace utils;
 
-# define NEIGHBORHOOD_DIST 8
+# define NEIGHBORHOOD_DIST 1
 
 Board::Board(const string& filename){
     vector<string> temp = read_lines(filename);
@@ -102,29 +102,31 @@ int Board::getAliveCellsInNeighborhood(int i, int j){
 }
 
 int Board::calcNewSpecies(int i, int j){
-    int aliveInNeighborhood = isAlive(i,j) ? getAliveCellsInNeighborhood(i,j) + 1 : getAliveCellsInNeighborhood(i,j);
-    int speciesSum = 0;
+    double aliveInNeighborhood = isAlive(i,j) ? getAliveCellsInNeighborhood(i,j) + 1 : getAliveCellsInNeighborhood(i,j);
+    double speciesSum = 0;
     neighborhoodBorders n = _getNeighborhoodBorders(i, j);
-    for (int k = n.down; k <= n.up; k++){
+    for (int k = n.up; k <= n.down; k++){
         for (int m = n.left; m <= n.right; m++){
             if (isNeighbor(i,j,k,m))
                 speciesSum += getSpecies(k,m);
         }
     }
     double newSpecies = speciesSum/aliveInNeighborhood;
+//    cout << "no round: " << newSpecies << " round: " << std::round(newSpecies) << endl;
     return std::round(newSpecies);
+
 }
 
 int Board::dominantSpeciesInNeighborhood(int i, int j){
     neighborhoodBorders n = _getNeighborhoodBorders(i, j);
     std::map<int,int> species = std::map<int,int>();
-    for (int k = n.down; k <= n.up; k++){
+    for (int k = n.up; k <= n.down; k++){
         for (int m = n.left; m <= n.right; m++){
-            if (isNeighbor(i,j,k,m)) {
-                if (species.find(getSpecies(i, j)) != species.end()) {
-                    species[getSpecies(i, j)]++;
+            if (isNeighbor(i,j,k,m) && isAlive(k,m)) {
+                if (species.find(getSpecies(k, m)) != species.end()) {
+                    species[getSpecies(k, m)]++;
                 } else {
-                    species[getSpecies(i, j)] = 1;
+                    species[getSpecies(k, m)] = 1;
                 }
             }
         }
@@ -143,5 +145,14 @@ int Board::dominantSpeciesInNeighborhood(int i, int j){
             maxElements = species[dominantSpecies];
         }
     }
+//    cout << "dominant species: " << dominantSpecies << endl; //todo:: delete
     return dominantSpecies;
+}
+
+void Board::clear(){
+    for (int i = 0; i < height; i++){
+        for (int j = 0; j < width; j++){
+            setSpecies(i,j,DEAD);
+        }
+    }
 }

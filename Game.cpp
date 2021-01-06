@@ -14,13 +14,17 @@ void Game::run() {
 	for (uint i = 0; i < m_gen_num; ++i) {
 	    //cout << "strat iteration: " << i << endl; //TODO: delete
 		auto gen_start = std::chrono::system_clock::now();
-		_step(phase1); // Iterates a single generation
+		if(i == 2)
+            cout << "dominent species for (7,5): " << currentBoard->dominantSpeciesInNeighborhood(7,5)  << endl; // TODO: delete
+        _step(phase1); // Iterates a single generation
         //cout << "finished phase 1" << endl; // TODO: delete
+        print_board("phase 0"); // TODO: delete
         _step(phase2);
 		auto gen_end = std::chrono::system_clock::now();
 		m_gen_hist.push_back((double)std::chrono::duration_cast<std::chrono::microseconds>(gen_end - gen_start).count());
 		print_board(nullptr);
-	} // generation loop
+//        cout << "new species for (9,11): " << currentBoard->calcNewSpecies(9,12)  << endl; // TODO: delete
+    } // generation loop
 	print_board("Final Board");
 	// TODO: delete. debug pring for gen_hist_times
 	/*cout << "print m_tile_hist" << endl;
@@ -66,12 +70,12 @@ void Game::_step(Phase phase) {
     for (int i=0 ; i< m_thread_num; i++) {
         waitForThreads.down();
     }
-    cout << "All threads are finished, finished phase" << phase << endl; // TODO: delete, debug
+//    cout << "All threads are finished, finished phase" << phase << endl; // TODO: delete, debug
 	// Swap pointers between current and next field
     Board* temp = currentBoard;
 	currentBoard = nextBoard;
     nextBoard = temp;
-
+    nextBoard->clear();
     return;
 	// NOTE: Threads must not be started here - doing so will lead to a heavy penalty in your grade
 }

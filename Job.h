@@ -4,7 +4,6 @@
 #include "Board.h"
 #include "Headers.hpp"
 #include "Thread.hpp"
-#define DEAD 0
 
 class Job {
     public:
