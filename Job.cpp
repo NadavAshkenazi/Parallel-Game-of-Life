@@ -24,17 +24,6 @@ void AliveJob::execute(Thread* thread) {
             }
         }
     }
-//    cout << "alive cells for (9,11): " << _currentBoard->getAliveCellsInNeighborhood(9, 12) << endl; //TODO: delete
-//    cout << "new species for (9,11): " << _currentBoard->calcNewSpecies(9,12)  << endl; //TODO: delete
-
-//    for (int i = _rowStart; i <= _rowEnd; i++) { //TODO: delete
-//        for (int j = 0; j < _currentBoard->getWidth(); j++){  // go over one line
-//            if(_currentBoard->isAlive(i,j))
-//            _nextBoard->setSpecies(i,j,1);
-//        }
-//    }
-//    std::cout << "working on Job Alive, my pid:  " << syscall(SYS_gettid) << " my rows: " << _rowStart << " - " << _rowEnd << endl; //TODO: delete
-//    sleep(5);  // TODO: delete
     return;
 }
 
@@ -43,26 +32,15 @@ void SpeciesJob::execute(Thread* thread) {
     for (int i = _rowStart; i <= _rowEnd; i++) { // go over this job lines
         for (int j = 0; j < _currentBoard->getWidth(); j++) { // go over one line
             if (_currentBoard->isAlive(i, j)){
-//                std::cout << "found alive" << endl; //TODO: delete
                 _nextBoard->setSpecies(i, j, _currentBoard->calcNewSpecies(i,j));
-//                std::cout << "new species " << i <<',' << j << ": " <<_currentBoard->calcNewSpecies(i,j) << endl; //TODO: delete
             }
         }
     }
-
-//    std::cout << "working on Job Species, my pid:  " << syscall(SYS_gettid) << "my rows: " << _rowStart << " - " << _rowEnd  << endl; //TODO: delete
-//    sleep(5); // TODO: delete
     return;
 }
 
 KillThreadJob::KillThreadJob(): Job(NULL, NULL, NULL, NULL) {}
 void KillThreadJob::execute(Thread* thread) {
-    //std::cout << "working on Job Kill, my pid:  " << syscall(SYS_gettid)  << endl; //TODO: delete
     thread->exit();
 }
 
-/*
-ostream& operator<<(ostream& os, const Job& job){
-    os << job._rowStart << job._rowEnd << endl;
-    return os;
-} */

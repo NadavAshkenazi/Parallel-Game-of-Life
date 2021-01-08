@@ -58,7 +58,6 @@ int Board::getWidth(){
     return this->width;
 }
 
-// TODO: maybe change Neighborhood to star (not square)
 /**
  * checks if a given cell is a neighbor of another
  * will work only when checking within neighborhoods borders
@@ -145,7 +144,6 @@ int Board::dominantSpeciesInNeighborhood(int i, int j){
             maxElements = species[dominantSpecies];
         }
     }
-//    cout << "dominant species: " << dominantSpecies << endl; //todo:: delete
     return dominantSpecies;
 }
 

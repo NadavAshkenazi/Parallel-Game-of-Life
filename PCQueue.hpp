@@ -19,12 +19,9 @@ public:
     // thread to enter and remove an item from the front of the queue and return it.
     // Assumes multiple consumers.
     T pop(){
-        //std::cout << "Try to pop, pid:  " << syscall(SYS_gettid) << endl; // TODO: delete
         while(writeReq);
         s->down();
-        //std::cout << "got after cond_wait, pid:  " << syscall(SYS_gettid) << endl;  // TODO: delete
         pthread_mutex_lock(&global_lock);
-        //std::cout << "succeed to pop, pid:  " << syscall(SYS_gettid) << endl;  // TODO: delete
         T item = q->front();
         q->pop();
         pthread_mutex_unlock(&global_lock);
@@ -35,10 +32,8 @@ public:
     // Hint for *minimal delay* - Allow the consumers to delay the producer as little as possible.
     // Assumes single producer
     void push(const T& item){
-        //std::cout << "try to push, pid:  " << syscall(SYS_gettid) << endl;  // TODO: delete
         writeReq = true;
         pthread_mutex_lock(&global_lock);
-        //std::cout << "pushing item, pid:  " << syscall(SYS_gettid) << endl;  // TODO: delete
         q->push(item);
         s->up();
         writeReq = false;
